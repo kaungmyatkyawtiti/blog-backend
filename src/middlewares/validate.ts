@@ -1,0 +1,21 @@
+import type { Request, Response, NextFunction } from "express";
+import { ZodError, ZodType } from "zod";
+
+export const validate =
+  (schema: ZodType) =>
+    (req: Request, res: Response, next: NextFunction) => {
+      try {
+        req.body = schema.parse(req.body);
+        next();
+      } catch (err) {
+        if (err instanceof ZodError) {
+
+          const errors = err.issues.map((e) => e.message);
+          console.log("error", err)
+          return res.status(400).json({
+            success: false,
+            error: errors,
+          });
+        }
+      }
+    };
