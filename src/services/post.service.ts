@@ -5,27 +5,48 @@ export async function getAllPosts() {
     include: {
       user: true,
       comments: true,
+      likes: true,
     },
     orderBy: { id: "desc" },
     take: 20,
   });
 }
 
-export async function getPostById(id: string) {
-  return prisma.post.findFirst({
-    where: { id: Number(id) },
+export async function getPost(id: number) {
+  return await prisma.post.findUnique({
+    where: { id },
+  });
+}
+
+export async function getPostById(id: number) {
+  return prisma.post.findUnique({
+    where: { id },
     include: {
       user: true,
       comments: {
-        include: { user: true }
-      }
+        include: {
+          user: true,
+          likes: true,
+        }
+      },
+      likes: true,
     },
   });
 }
 
-export async function deletePost(postId: string) {
-  const id = Number(postId);
+export async function createPost(
+  content: string,
+  userId: number,
+) {
+  return await prisma.post.create({
+    data: {
+      content,
+      userId,
+    },
+  });
+}
 
+export async function deletePost(id: number) {
   // first delete cmts
   await prisma.comment.deleteMany({ where: { postId: id } })
 
@@ -33,4 +54,33 @@ export async function deletePost(postId: string) {
   await prisma.post.delete({ where: { id } })
 
   return true
+}
+
+export async function likePost(postId: number, userId: number) {
+  return prisma.postLike.create({
+    data: {
+      postId,
+      userId,
+    }
+  })
+}
+
+export async function unlikePost(postId: number, userId: number) {
+  return prisma.postLike.deleteMany({
+    where: { postId, userId }
+  })
+}
+
+export async function getPostAllLikes(postId: number) {
+  return prisma.postLike.findMany({
+    where: { postId },
+    include: {
+      user: {
+        include: {
+          followers: true,
+          followings: true,
+        },
+      },
+    },
+  });
 }

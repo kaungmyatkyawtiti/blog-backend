@@ -9,9 +9,9 @@ export const validate =
         next();
       } catch (err) {
         if (err instanceof ZodError) {
-
           const errors = err.issues.map((e) => e.message);
-          console.log("error", err)
+          console.log("error", errors)
+
           return res.status(400).json({
             success: false,
             error: errors,

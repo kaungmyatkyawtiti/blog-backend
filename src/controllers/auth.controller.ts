@@ -4,6 +4,7 @@ import { accessExpiresIn, accessSecret, nodeEnv, refreshExpiresIn, refreshSecret
 import bcrypt from "bcrypt"
 import * as authService from "../services/auth.service.ts"
 import type { UserPayload } from "../middlewares/auth.middleware.ts";
+import * as userService from "../services/user.service.ts";
 
 const generateTokens = (userId: number, username: string) => {
   const accessToken = jwt.sign(
@@ -19,6 +20,26 @@ const generateTokens = (userId: number, username: string) => {
   );
 
   return { accessToken, refreshToken };
+};
+
+const setTokenCookies = (
+  res: Response,
+  accessToken: string,
+  refreshToken: string
+) => {
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: nodeEnv === "production",
+    sameSite: "lax", // or "strict"
+    maxAge: 15 * 60 * 1000, // 15 minutes
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: nodeEnv === "production",
+    sameSite: "lax",
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours 
+  });
 };
 
 export async function handleRegister(
@@ -41,7 +62,7 @@ export async function handleRegister(
       });
     }
 
-    const existingUser = await authService.findUserByUsername(username);
+    const existingUser = await userService.findUserByUsername(username);
 
     if (existingUser) {
       return res.status(409).json({
@@ -50,7 +71,7 @@ export async function handleRegister(
       });
     }
 
-    const user = await authService.createUser(username, name, password);
+    const user = await authService.registerUser(username, name, password);
 
     res.status(201).json({
       success: true,
@@ -78,7 +99,7 @@ export async function handleLogin(
   try {
     const { username, password } = req.body;
 
-    const user = await authService.findUserByUsername(username);
+    const user = await userService.findUserByUsername(username);
 
     const isValid =
       user && await bcrypt.compare(password, user.password);
@@ -96,24 +117,16 @@ export async function handleLogin(
 
     await authService.saveRefreshToken(user.id, refreshToken)
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: nodeEnv === "production",
-      maxAge: 24 * 60 * 60 * 1000,  // 24 hours
-      sameSite: "lax" // or "strict"
-    });
+    setTokenCookies(res, accessToken, refreshToken);
 
     return res.json({
       success: true,
       message: 'Login successful',
       data: {
-        user: {
-          id: user.id,
-          name: user.name,
-          username: user.username,
-        },
-        accessToken: accessToken,
-      }
+        id: user.id,
+        name: user.name,
+        username: user.username,
+      },
     });
   } catch (err) {
     console.error('Login error:', err);
@@ -145,7 +158,7 @@ export async function handleRefreshAccessToken(
       refreshSecret
     ) as UserPayload;
 
-    const user = await authService.findUserById(decoded.userId)
+    const user = await userService.findUserById(decoded.userId)
 
     if (!user || user.refreshToken !== refreshToken) {
       return res.status(401).json({
@@ -161,10 +174,16 @@ export async function handleRefreshAccessToken(
       { expiresIn: accessExpiresIn }
     );
 
+    res.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      secure: nodeEnv === 'production',
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000
+    });
+
     return res.json({
       success: true,
       message: 'Access token refreshed',
-      data: newAccessToken
     });
   } catch (err) {
     console.error('Refresh token error:', err);
@@ -175,44 +194,15 @@ export async function handleRefreshAccessToken(
   }
 }
 
-export async function handleGetAllProfiles(
+export async function handleVerifyUser(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const users = await authService.getAllProfiles();
+    const id = req.user?.userId;
 
-    res.status(200).json({
-      success: true,
-      message: "Suceessfully fetch all profiles",
-      data: users
-    });
-  } catch (err) {
-    console.error('Get profile error:', err);
-    return res.status(500).json({
-      success: false,
-      error: 'Failed to fetch all profiles'
-    });
-  }
-}
-
-export async function handleGetProfileById(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        error: 'UserId is required'
-      });
-    }
-
-    const user = await authService.getProfileById(id);
+    const user = await userService.findUserById(+id);
 
     if (!user) {
       return res.status(404).json({

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt"
 import prisma from "../lib/prismaClient.ts";
 
-export async function createUser(
+export async function registerUser(
   username: string,
   name: string,
   password: string,
@@ -19,51 +19,14 @@ export async function createUser(
   });
 };
 
-export async function findUserByUsername(username: string) {
-  return await prisma.user.findUnique({
-    where: { username },
-  });
-};
-
 export async function saveRefreshToken(
-  userId: number,
+  id: number,
   refreshToken: string
 ) {
   return await prisma.user.update({
-    where: { id: userId },
+    where: { id },
     data: {
-      refreshToken: refreshToken
+      refreshToken
     }
   });
-}
-
-export async function findUserById(userId: number) {
-  return await prisma.user.findUnique({
-    where: { id: userId }
-  });
-}
-
-export async function getAllProfiles() {
-  const data = prisma.user.findMany({
-    include: {
-      posts: true,
-      comments: true,
-    },
-    orderBy: { id: "desc" },
-    take: 20,
-  });
-
-  return data;
-}
-
-export async function getProfileById(userId: string) {
-  const data = prisma.user.findFirst({
-    where: { id: Number(userId) },
-    include: {
-      posts: true,
-      comments: true,
-    },
-  });
-
-  return data;
 }

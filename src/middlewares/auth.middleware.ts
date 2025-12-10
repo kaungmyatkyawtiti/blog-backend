@@ -12,10 +12,10 @@ export default function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const authHeader = req.headers?.authorization;
-  console.log("authHeader", authHeader);
+  const { accessToken } = req.cookies;
+  console.log("accessToken", accessToken);
 
-  if (!authHeader) {
+  if (!accessToken) {
     return res.status(401).json({
       success: false,
       error: "Access token required",
@@ -23,16 +23,12 @@ export default function authMiddleware(
     });
   }
 
-  const accessToken = authHeader.substring("Bearer ".length);
-  console.log("accessToken", accessToken);
-
   try {
     const decoded = jwt.verify(
       accessToken,
       accessSecret,
     ) as UserPayload;
     console.log("decoded", decoded);
-    console.log("request", req);
 
     req.user = {
       userId: decoded.userId,

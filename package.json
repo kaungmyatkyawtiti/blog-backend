@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "backend",
+  "name": "blog-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -20,13 +20,13 @@
     "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
     "nodemon": "^3.1.11",
-    "prisma": "^7.0.1",
+    "prisma": "^7.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.0.1",
-    "@prisma/client": "^7.0.1",
+    "@prisma/client": "^7.1.0",
     "@types/jsonwebtoken": "^9.0.10",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",

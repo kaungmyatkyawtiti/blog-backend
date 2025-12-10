@@ -9,7 +9,7 @@ const authRouter = Router();
 authRouter.post('/register', validate(registerSchema), authController.handleRegister);
 authRouter.post('/login', validate(loginSchema), authController.handleLogin);
 authRouter.post('/refresh', authController.handleRefreshAccessToken);
-authRouter.get('/profiles', authMiddleware, authController.handleGetAllProfiles);
-authRouter.get('/profiles/:id', authMiddleware, authController.handleGetProfileById);
+
+authRouter.get('/verify', authMiddleware, authController.handleVerifyUser);
 
 export default authRouter;
