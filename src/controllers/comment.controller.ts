@@ -31,7 +31,7 @@ export async function handleCreateComment(
 
     const comment = await commentService.createComment(content, +user?.userId, +postId,);
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: "Suceessfully created comment",
       data: comment
