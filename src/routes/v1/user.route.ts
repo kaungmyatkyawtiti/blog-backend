@@ -4,7 +4,7 @@ import authMiddleware from "../../middlewares/auth.middleware.ts";
 
 const userRouter = Router();
 
-userRouter.get('/', authMiddleware, userController.handleGetAllUsers);
+userRouter.get('/', userController.handleGetAllUsers);
 
 userRouter.post('/follow/:id', authMiddleware, userController.handleFollowUser);
 userRouter.delete('/unfollow/:id', authMiddleware, userController.handleUnfollowUser);
