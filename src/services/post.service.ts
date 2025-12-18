@@ -89,3 +89,37 @@ export async function getPostAllLikes(postId: number) {
     },
   });
 }
+
+export async function getPostsByUsers(userIds: number[]) {
+  return await prisma.post.findMany({
+    where: {
+      userId: {
+        in: userIds,
+      },
+    },
+    include: {
+      user: true,
+      comments: true,
+      likes: true,
+    },
+    orderBy: { id: "desc" },
+    take: 20,
+  });
+}
+
+export async function searchPosts(q: string) {
+  return await prisma.post.findMany({
+    where: {
+      OR: [
+        { content: { contains: q, mode: "insensitive" } },
+        { user: { username: { contains: q, mode: "insensitive" } } },
+      ],
+    },
+    include: {
+      user: true,
+      likes: true,
+      comments: true,
+    },
+    take: 50,
+  });
+}

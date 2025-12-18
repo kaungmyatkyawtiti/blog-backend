@@ -8,6 +8,7 @@ import { postSchema } from "../../validations/app.validation.ts";
 const postRouter = Router();
 
 postRouter.get("/posts", postController.handleGetAllPosts);
+postRouter.get("/posts/search", postController.handleSearchPosts);
 postRouter.get("/posts/:id", postController.handleGetPostById);
 
 postRouter.post("/posts", authMiddleware, validate(postSchema), postController.handleCreatePost);
@@ -17,5 +18,7 @@ postRouter.post("/like/posts/:id", authMiddleware, postController.handleLikePost
 postRouter.delete("/unlike/posts/:id", authMiddleware, postController.handleUnlikePost);
 
 postRouter.get("/likes/posts/:id", postController.handleGetPostAllLikes);
+
+postRouter.get("/following/posts", authMiddleware, postController.handleGetFollowingPosts);
 
 export default postRouter;

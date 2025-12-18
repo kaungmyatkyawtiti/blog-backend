@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express"
 import * as postService from "../services/post.service.ts";
+import * as userService from "../services/user.service.ts";
 
 export async function handleGetAllPosts(
   req: Request,
@@ -179,3 +180,56 @@ export async function handleGetPostAllLikes(
     next(err);
   }
 }
+
+
+export async function handleSearchPosts(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const q = req.query.q;
+
+    if (typeof q !== "string") {
+      return res.status(400).json({
+        success: false,
+        message: "Query parameter 'q' is required",
+      });
+    }
+
+    const posts = await postService.searchPosts(q);
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully searched posts",
+      data: posts,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function handleGetFollowingPosts(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const user = req.user;
+
+    const followings = await userService.getFollowings(+user?.userId)
+    console.log("followings", followings);
+    const userIds = followings.map(item => item.id);
+    console.log("userIds", userIds)
+
+    const data = await postService.getPostsByUsers(userIds);
+
+    res.status(200).json({
+      success: true,
+      message: "Fetched following users' posts successfully",
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
