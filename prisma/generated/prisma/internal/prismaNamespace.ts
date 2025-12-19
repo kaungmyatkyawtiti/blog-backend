@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.1.0
- * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
+ * Prisma Client JS version: 7.2.0
+ * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.1.0",
-  engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba"
+  client: "7.2.0",
+  engine: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3"
 }
 
 /**
@@ -389,7 +389,8 @@ export const ModelName = {
   Comment: 'Comment',
   PostLike: 'PostLike',
   CommentLike: 'CommentLike',
-  Follow: 'Follow'
+  Follow: 'Follow',
+  Noti: 'Noti'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -405,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "post" | "comment" | "postLike" | "commentLike" | "follow"
+    modelProps: "user" | "post" | "comment" | "postLike" | "commentLike" | "follow" | "noti"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -853,6 +854,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Noti: {
+      payload: Prisma.$NotiPayload<ExtArgs>
+      fields: Prisma.NotiFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NotiFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NotiFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload>
+        }
+        findFirst: {
+          args: Prisma.NotiFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NotiFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload>
+        }
+        findMany: {
+          args: Prisma.NotiFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload>[]
+        }
+        create: {
+          args: Prisma.NotiCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload>
+        }
+        createMany: {
+          args: Prisma.NotiCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NotiCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload>[]
+        }
+        delete: {
+          args: Prisma.NotiDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload>
+        }
+        update: {
+          args: Prisma.NotiUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload>
+        }
+        deleteMany: {
+          args: Prisma.NotiDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NotiUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NotiUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload>[]
+        }
+        upsert: {
+          args: Prisma.NotiUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotiPayload>
+        }
+        aggregate: {
+          args: Prisma.NotiAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNoti>
+        }
+        groupBy: {
+          args: Prisma.NotiGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotiGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NotiCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotiCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -957,6 +1032,19 @@ export const FollowScalarFieldEnum = {
 export type FollowScalarFieldEnum = (typeof FollowScalarFieldEnum)[keyof typeof FollowScalarFieldEnum]
 
 
+export const NotiScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  content: 'content',
+  userId: 'userId',
+  postId: 'postId',
+  read: 'read',
+  created: 'created'
+} as const
+
+export type NotiScalarFieldEnum = (typeof NotiScalarFieldEnum)[keyof typeof NotiScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1026,6 +1114,13 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -1143,6 +1238,7 @@ export type GlobalOmitConfig = {
   postLike?: Prisma.PostLikeOmit
   commentLike?: Prisma.CommentLikeOmit
   follow?: Prisma.FollowOmit
+  noti?: Prisma.NotiOmit
 }
 
 /* Types for Logging */

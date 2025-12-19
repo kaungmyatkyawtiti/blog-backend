@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express"
 import * as commentService from "../services/comment.service.ts";
+import { addNoti } from "../services/noti.service.ts";
 
 export async function handleGetAllcomments(
   req: Request,
@@ -30,6 +31,13 @@ export async function handleCreateComment(
     const user = req.user;
 
     const comment = await commentService.createComment(content, +user?.userId, +postId,);
+
+    await addNoti({
+      type: "comment",
+      content: "reply your post",
+      postId,
+      userId: user?.userId,
+    });
 
     res.status(201).json({
       success: true,
@@ -85,6 +93,17 @@ export async function handleLikeComment(
     const user = req.user;
 
     const like = await commentService.likeComment(+id, user?.userId)
+    console.log("like in handleLikeComment", like);
+
+    const postId = await commentService.getPostId(+id);
+    console.log("postId", postId);
+
+    await addNoti({
+      type: "like",
+      content: "likes your comment",
+      postId,
+      userId: user?.userId,
+    });
 
     res.status(201).json({
       success: true,

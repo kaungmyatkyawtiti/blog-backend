@@ -19,6 +19,16 @@ export async function getCommentById(id: number) {
   });
 }
 
+export async function getPostId(id: number) {
+  const select = await prisma.comment.findUnique({
+    where: { id },
+    select: { postId: true },
+  });
+  if (!select) throw new Error("Comment not found")
+
+  return select.postId;
+}
+
 export async function createComment(
   content: string,
   userId: number,

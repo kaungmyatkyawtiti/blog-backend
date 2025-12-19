@@ -202,7 +202,7 @@ export async function handleVerifyUser(
   try {
     const id = req.user?.userId;
 
-    const user = await userService.findUserById(+id);
+    const user = await userService.selectUserById(+id);
 
     if (!user) {
       return res.status(404).json({

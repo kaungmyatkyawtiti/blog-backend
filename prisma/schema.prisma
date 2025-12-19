@@ -27,6 +27,7 @@ model User {
   commentLikes CommentLike[]
   followers    Follow[]      @relation("followers")
   followings   Follow[]      @relation("followings")
+  notis        Noti[]
   created      DateTime      @default(now())
 }
 
@@ -37,6 +38,7 @@ model Post {
   userId   Int
   comments Comment[]
   likes    PostLike[]
+  notis    Noti[]
   created  DateTime   @default(now())
 }
 
@@ -76,4 +78,16 @@ model Follow {
   following   User     @relation("followers", fields: [followingId], references: [id], onDelete: Cascade)
   followingId Int
   created     DateTime @default(now())
+}
+
+model Noti {
+  id      Int      @id @default(autoincrement())
+  type    String
+  content String
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int
+  post    Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId  Int
+  read    Boolean  @default(false)
+  created DateTime @default(now())
 }

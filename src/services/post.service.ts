@@ -11,6 +11,7 @@ export async function getAllPosts() {
         }
       },
       likes: true,
+      notis: true,
     },
     orderBy: { id: "desc" },
     take: 20,

@@ -56,7 +56,8 @@ export const ModelName = {
   Comment: 'Comment',
   PostLike: 'PostLike',
   CommentLike: 'CommentLike',
-  Follow: 'Follow'
+  Follow: 'Follow',
+  Noti: 'Noti'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -138,6 +139,19 @@ export const FollowScalarFieldEnum = {
 } as const
 
 export type FollowScalarFieldEnum = (typeof FollowScalarFieldEnum)[keyof typeof FollowScalarFieldEnum]
+
+
+export const NotiScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  content: 'content',
+  userId: 'userId',
+  postId: 'postId',
+  read: 'read',
+  created: 'created'
+} as const
+
+export type NotiScalarFieldEnum = (typeof NotiScalarFieldEnum)[keyof typeof NotiScalarFieldEnum]
 
 
 export const SortOrder = {

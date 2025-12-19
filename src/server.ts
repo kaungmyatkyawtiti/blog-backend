@@ -7,6 +7,7 @@ import authRouter from "./routes/v1/auth.route.ts";
 import userRouter from "./routes/v1/user.route.ts";
 import commentRouter from "./routes/v1/comment.route.ts";
 import postRouter from "./routes/v1/post.route.ts";
+import notiRouter from "./routes/v1/noti.route.ts";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/api", commentRouter);
 app.use("/api", postRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
+app.use('/api/notis', notiRouter);
 
 const server = app.listen(serverPort, () => {
   console.log(`Server running on ${serverPort}!`);

@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express"
 import * as postService from "../services/post.service.ts";
 import * as userService from "../services/user.service.ts";
+import { addNoti } from "../services/noti.service.ts";
 
 export async function handleGetAllPosts(
   req: Request,
@@ -115,6 +116,13 @@ export async function handleLikePost(
     const user = req.user;
 
     const like = await postService.likePost(+id, user?.userId)
+
+    await addNoti({
+      type: "like",
+      content: "likes your post",
+      postId: +id,
+      userId: user?.userId,
+    });
 
     res.status(201).json({
       success: true,

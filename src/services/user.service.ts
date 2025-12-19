@@ -7,6 +7,7 @@ export async function getAllProfiles() {
       comments: true,
       followers: true,
       followings: true,
+      notis: true
     },
     orderBy: { id: "desc" },
     take: 20,
@@ -72,13 +73,26 @@ export async function findUserByUsername(username: string) {
 };
 
 export async function findUserById(id: number) {
-  const data = prisma.user.findUnique({
+  return prisma.user.findUnique({
     where: { id },
+  });
+}
+
+export async function selectUserById(id: number) {
+  const data = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      image: true,
+      bio: true,
+      created: true,
+    },
   });
 
   return data;
 }
-
 export async function followUser(followerId: number, followingId: number) {
   const data = await prisma.follow.create({
     data: {
