@@ -67,7 +67,7 @@ export async function handleRegister(
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        error: "User already existed"
+        error: "Unable to create account. Please try again."
       });
     }
 
